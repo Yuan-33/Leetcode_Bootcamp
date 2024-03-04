@@ -1,0 +1,72 @@
+#1
+class Solution(object):
+    def containsDuplicate(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        seen = set()
+        for num in nums:
+            if num in seen:
+                return True
+            seen.add(num)
+        return False
+        
+        
+#2
+class Solution(object):
+    def videoStitching(self, clips, time):
+        """
+        :type clips: List[List[int]]
+        :type time: int
+        :rtype: int
+        """
+        clips.sort(key=lambda x: (x[0], -x[1]))
+        count = 0
+        currentEnd, nextEnd = 0, 0
+        i = 0
+        n = len(clips)
+        
+        while i < n and currentEnd < time:
+            # While there are clips and the next clip starts before or at currentEnd
+            while i < n and clips[i][0] <= currentEnd:
+                # Extend nextEnd as far as possible with the current clip
+                nextEnd = max(nextEnd, clips[i][1])
+                i += 1
+            
+            # Once no more clips can extend coverage, move currentEnd to nextEnd
+            if currentEnd == nextEnd:
+                # If currentEnd hasn't moved, it's impossible to cover the event
+                return -1
+            
+            currentEnd = nextEnd
+            count += 1
+        
+        if currentEnd >= time:
+            return count
+        else:
+            return -1
+
+
+#3
+class Solution(object):
+    def maxArea(self, height):
+        """
+        :type height: List[int]
+        :rtype: int
+        """
+        left, right = 0, len(height) - 1  # Initialize two pointers
+        max_area = 0  # Initialize max_area to track the largest area found
+        
+        while left < right:  # Continue until the two pointers meet
+            # Calculate the area formed between the left and right lines
+            area = min(height[left], height[right]) * (right - left)
+            max_area = max(max_area, area)  # Update max_area if the current area is larger
+            
+            # Move the pointer pointing to the shorter line towards the other pointer
+            if height[left] < height[right]:
+                left += 1
+            else:
+                right -= 1
+                
+        return max_area
