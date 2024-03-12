@@ -1,1 +1,88 @@
+8. String to Integer
+class Solution(object):
+    def myAtoi(self, s):
+
+        i, n, sign = 0, len(s), 1  # Initialize pointer, string length, and sign
+        MAX_INT, MIN_INT = 2**31 - 1, -2**31  # Define 32-bit integer boundaries
+
+        # Step 1: Ignore leading whitespaces
+        while i < n and s[i] == ' ':
+            i += 1
+
+        # Step 2: Check for a sign indicator
+        if i < n and (s[i] == '-' or s[i] == '+'):
+            sign = -1 if s[i] == '-' else 1
+            i += 1
+
+        # Step 3: Convert digits to integer until a non-digit is encountered
+        result = 0
+        while i < n and s[i].isdigit():
+            result = result * 10 + int(s[i])
+            i += 1
+
+        # Step 4: Apply the sign
+        result *= sign
+
+        # Step 5: Clamp the result within the 32-bit signed integer range
+        if result < MIN_INT:
+            return MIN_INT
+        elif result > MAX_INT:
+            return MAX_INT
+        else:
+            return result
+            
+
+424
+class Solution(object):
+    def characterReplacement(self, s, k):
+        count = {}
+        max_length = 0
+        left = 0
+        
+        # The variable to keep track of the count of the most frequent character in the current window
+        max_freq = 0
+
+        for right in range(len(s)):
+            # Get the character at the current right pointer and update its count in the dictionary
+            count[s[right]] = count.get(s[right], 0) + 1
+            # Update the max frequency character count
+            max_freq = max(max_freq, count[s[right]])
+
+            # If the current window size minus the count of the most frequent character is greater than k,
+            # it means we need to shrink the window from the left
+            while (right - left + 1) - max_freq > k:
+                count[s[left]] -= 1
+                left += 1
+                # After moving left, update max_freq as it may change
+                max_freq = max(count.values())
+            
+            # Calculate the maximum length of the window
+            max_length = max(max_length, right - left + 1)
+        
+        return max_length
+            
+            
+336
+class Solution:
+    def palindromePairs(self, words: List[str]) -> List[List[int]]:
+        backward, res = {}, []
+        for i, word in enumerate(words):
+            backward[word[::-1]] = i
+
+        for i, word in enumerate(words):
+            
+            if word in backward and backward[word] != i:
+                res.append([i, backward[word]])
+                
+            if word != "" and "" in backward and word == word[::-1]:
+                res.append([i, backward[""]])
+                res.append([backward[""], i])
+                
+            for j in range(len(word)):
+                if word[j:] in backward and word[:j] == word[j-1::-1]:
+                    res.append([backward[word[j:]], i])
+                if word[:j] in backward and word[j:] == word[:j-1:-1]:
+                    res.append([i, backward[word[:j]]])
+                    
+        return res
 
