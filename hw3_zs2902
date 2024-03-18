@@ -1,0 +1,73 @@
+1.
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution(object):
+    def middleNode(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        temp = head
+        while temp and temp.next:
+            
+            head = head.next
+            temp = temp.next.next
+        return head
+
+
+2.
+class Solution(object):
+    def reverseKGroup(self, head, k):
+        dummy = jump = ListNode(0)
+        dummy.next = l = r = head
+        
+        while True:
+            count = 0
+            while r and count < k:
+                r = r.next
+                count += 1
+            if count == k:
+                pre, cur = r, l
+                for _ in range(k):
+                    cur.next, cur, pre = pre, cur.next, cur
+                jump.next, jump, l = pre, l, r
+            else:
+                return dummy.next
+                
+                
+3.
+class Solution(object):
+    def isValidSudoku(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: bool
+        """
+        for row in board:
+            if not self.isUnique(row):
+                return False
+        
+        # Check for each column
+        for col in zip(*board):
+            if not self.isUnique(col):
+                return False
+        
+        # Check for each 3x3 sub-box
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                sub_box = [board[x][y] for x in range(i, i+3) for y in range(j, j+3)]
+                if not self.isUnique(sub_box):
+                    return False
+        
+        return True
+    
+    def isUnique(self, items):
+        """
+        Helper function to check if elements in a list are unique (excluding '.').
+        :type items: List[str]
+        :rtype: bool
+        """
+        items = [item for item in items if item != '.']
+        return len(items) == len(set(items))
