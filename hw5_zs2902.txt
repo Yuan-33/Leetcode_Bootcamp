@@ -1,0 +1,55 @@
+1.
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+    if root in (None, p, q): return root
+    left, right = (self.lowestCommonAncestor(kid, p, q)
+                   for kid in (root.left, root.right))
+    return root if left and right else left or right
+
+2.
+class Solution(object):
+    def wordBreak(self, s, wordDict):
+        """
+        :type s: str
+        :type wordDict: Set[str]
+        :rtype: bool
+        """
+        dp = [False] * (len(s) + 1) # dp[i] means s[:i+1] can be segmented into words in the wordDicts 
+        dp[0] = True
+        for i in range(len(s)):
+            for j in range(i, len(s)):
+                if dp[i] and s[i: j+1] in wordDict:
+                    dp[j+1] = True
+                    
+        return dp[-1]
+
+3.
+def findKthLargest1(self, nums, k):
+    heap = nums[:k]
+    heapq.heapify(heap)  # create a min-heap whose size is k 
+    for num in nums[k:]:
+        if num > heap[0]:
+           heapq.heapreplace(heap, num)
+        # or use:
+        # heapq.heappushpop(heap, num)
+    return heap[0]
+  
+ 
+def findKthLargest(self, nums, k):
+    pos = self.partition(nums, 0, len(nums)-1)
+    if pos > len(nums) - k:
+        return self.findKthLargest(nums[:pos], k-(len(nums)-pos))
+    elif pos < len(nums) - k:
+        return self.findKthLargest(nums[pos+1:], k)
+    else:
+        return nums[pos]
+ 
+def partition(self, nums, l, r):
+    pivot = nums[r]
+    lo = l 
+    for i in xrange(l, r):
+        if nums[i] < pivot:
+            nums[i], nums[lo] = nums[lo], nums[i]
+            lo += 1
+    nums[lo], nums[r] = nums[r], nums[lo]
+    return lo
